@@ -1,4 +1,5 @@
 using DocumentsOrganizer.Entities;
+using DocumentsOrganizer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,8 @@ namespace DocumentsOrganizer
             services.AddControllers();
             services.AddDbContext<DocumentsOrganizerDbContext>();
             services.AddScoped<DocumentsOrganizerSeeder>();
+            services.AddAutoMapper(this.GetType().Assembly);
+            services.AddScoped<IDocumentService, DocumentService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DocumentsOrganizer", Version = "v1" });

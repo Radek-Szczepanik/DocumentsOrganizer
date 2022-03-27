@@ -32,7 +32,7 @@ namespace DocumentsOrganizer
                 new Document()
                 {
                     Name = "Orange",
-                    Informations = new List<DocumentInformation>()
+                    DocumentInformations = new List<DocumentInformation>()
                     {
                         new DocumentInformation()
                         {

@@ -6,6 +6,6 @@ namespace DocumentsOrganizer.Entities
     {
         public string Name { get; set; }
 
-        public virtual List<DocumentInformation> Informations { get; set; }
+        public virtual List<DocumentInformation> DocumentInformations { get; set; }
     }
 }
