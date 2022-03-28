@@ -5,8 +5,9 @@ namespace DocumentsOrganizer.Services
 {
     public interface IDocumentService
     {
-        int Create(CreateDocumentDto dto);
         IEnumerable<DocumentDto> GetAll();
         DocumentDto GetById(int id);
+        int Create(CreateDocumentDto dto);
+        public bool Delete(int id);
     }
 }

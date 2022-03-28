@@ -52,5 +52,17 @@ namespace DocumentsOrganizer.Services
 
             return document.Id;
         }
+
+        public bool Delete(int id)
+        {
+            var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
+
+            if(document is null) return false;
+
+            dbContext.Documents.Remove(document);
+            dbContext.SaveChanges();
+
+            return true;
+        }
     }
 }

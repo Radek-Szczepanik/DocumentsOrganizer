@@ -36,5 +36,19 @@ namespace DocumentsOrganizer.Controllers
             var documentId = documentService.Create(dto);
             return Created($"api/document/{documentId}", null);
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public ActionResult DeleteDocument([FromRoute] int id)
+        {
+            var isDeleted = documentService.Delete(id);
+            
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
     }
 }
