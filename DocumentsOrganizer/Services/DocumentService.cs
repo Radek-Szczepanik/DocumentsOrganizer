@@ -53,6 +53,22 @@ namespace DocumentsOrganizer.Services
             return document.Id;
         }
 
+        public bool Update(int id, UpdateDocumentDto dto)
+        {
+            var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
+
+            if (document is null)
+            {
+                return false;
+            }
+
+            document.Name = dto.Name;
+
+            dbContext.SaveChanges();
+
+            return true;
+        }
+
         public bool Delete(int id)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);

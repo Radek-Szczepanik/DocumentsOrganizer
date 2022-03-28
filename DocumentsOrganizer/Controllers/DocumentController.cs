@@ -37,6 +37,24 @@ namespace DocumentsOrganizer.Controllers
             return Created($"api/document/{documentId}", null);
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        public ActionResult UpdateDocument([FromBody] UpdateDocumentDto dto, [FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var isUpdated = documentService.Update(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public ActionResult DeleteDocument([FromRoute] int id)
