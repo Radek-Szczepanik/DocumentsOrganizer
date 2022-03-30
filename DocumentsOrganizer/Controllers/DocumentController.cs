@@ -33,6 +33,11 @@ namespace DocumentsOrganizer.Controllers
         [HttpPost]
         public ActionResult CreateDocument([FromBody] CreateDocumentDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var documentId = documentService.Create(dto);
             return Created($"api/document/{documentId}", null);
         }

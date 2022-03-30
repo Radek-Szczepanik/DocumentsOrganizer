@@ -2,6 +2,7 @@
 using DocumentsOrganizer.Entities;
 using DocumentsOrganizer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,11 +12,13 @@ namespace DocumentsOrganizer.Services
     {
         private readonly DocumentsOrganizerDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ILogger<DocumentService> logger;
 
-        public DocumentService(DocumentsOrganizerDbContext dbContext, IMapper mapper)
+        public DocumentService(DocumentsOrganizerDbContext dbContext, IMapper mapper, ILogger<DocumentService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public IEnumerable<DocumentDto> GetAll()
