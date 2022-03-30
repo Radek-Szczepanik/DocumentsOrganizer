@@ -1,4 +1,5 @@
 using DocumentsOrganizer.Entities;
+using DocumentsOrganizer.Middleware;
 using DocumentsOrganizer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace DocumentsOrganizer
             services.AddScoped<DocumentsOrganizerSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<ErrorHandlingMiddleware>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DocumentsOrganizer", Version = "v1" });
@@ -43,13 +45,10 @@ namespace DocumentsOrganizer
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DocumentsOrganizer v1"));
             }
-
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
