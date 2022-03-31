@@ -6,6 +6,7 @@ using System.Collections.Generic;
 namespace DocumentsOrganizer.Controllers
 {
     [Route("api/document")]
+    [ApiController]
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService documentService;
@@ -19,6 +20,7 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult<IEnumerable<DocumentDto>> GetAll()
         {
             var documents = documentService.GetAll();
+
             return Ok(documents);
         }
 
@@ -27,18 +29,15 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult<DocumentDto> GetById([FromRoute] int id)
         {
             var document = documentService.GetById(id);
+
             return Ok(document);
         }
 
         [HttpPost]
         public ActionResult CreateDocument([FromBody] CreateDocumentDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var documentId = documentService.Create(dto);
+
             return Created($"api/document/{documentId}", null);
         }
 
@@ -46,16 +45,7 @@ namespace DocumentsOrganizer.Controllers
         [Route("{id}")]
         public ActionResult UpdateDocument([FromBody] UpdateDocumentDto dto, [FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var isUpdated = documentService.Update(id, dto);
-
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
+            documentService.Update(id, dto);
 
             return Ok();
         }
@@ -64,12 +54,7 @@ namespace DocumentsOrganizer.Controllers
         [Route("{id}")]
         public ActionResult DeleteDocument([FromRoute] int id)
         {
-            var isDeleted = documentService.Delete(id);
-            
-            if (isDeleted)
-            {
-                return NoContent();
-            }
+            documentService.Delete(id);
 
             return NotFound();
         }

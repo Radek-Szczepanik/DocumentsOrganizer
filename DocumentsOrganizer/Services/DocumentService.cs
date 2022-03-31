@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DocumentsOrganizer.Entities;
+using DocumentsOrganizer.Exceptions;
 using DocumentsOrganizer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,8 @@ namespace DocumentsOrganizer.Services
                 .Include(i => i.DocumentInformations)
                 .ToList();
 
-            if (documents is null) return null;
+            if (documents is null)
+                throw new NotFoundException("Document not found");
 
             var result = mapper.Map<List<DocumentDto>>(documents);
             return result;
@@ -41,7 +43,8 @@ namespace DocumentsOrganizer.Services
                 .Include(i => i.DocumentInformations)
                 .FirstOrDefault(x => x.Id == id);
 
-            if (document is null) return null;
+            if (document is null)
+                throw new NotFoundException("Document not found");
 
             var result = mapper.Map<DocumentDto>(document);
             return result;
@@ -56,32 +59,27 @@ namespace DocumentsOrganizer.Services
             return document.Id;
         }
 
-        public bool Update(int id, UpdateDocumentDto dto)
+        public void Update(int id, UpdateDocumentDto dto)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
 
             if (document is null)
-            {
-                return false;
-            }
+                throw new NotFoundException("Document not found");
 
             document.Name = dto.Name;
 
             dbContext.SaveChanges();
-
-            return true;
         }
 
-        public bool Delete(int id)
+        public void Delete(int id)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
 
-            if(document is null) return false;
+            if(document is null)
+                throw new NotFoundException("Document not found");
 
             dbContext.Documents.Remove(document);
             dbContext.SaveChanges();
-
-            return true;
         }
     }
 }

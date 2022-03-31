@@ -8,7 +8,7 @@ namespace DocumentsOrganizer.Services
         IEnumerable<DocumentDto> GetAll();
         DocumentDto GetById(int id);
         int Create(CreateDocumentDto dto);
-        bool Update(int id, UpdateDocumentDto dto);
-        public bool Delete(int id);
+        void Update(int id, UpdateDocumentDto dto);
+        void Delete(int id);
     }
 }
