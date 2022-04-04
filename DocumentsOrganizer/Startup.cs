@@ -27,6 +27,7 @@ namespace DocumentsOrganizer
             services.AddScoped<DocumentsOrganizerSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IDocumentService, DocumentService>();
+            services.AddScoped<IDocumentInformationService, DocumentInformationService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddSwaggerGen(c =>
             {

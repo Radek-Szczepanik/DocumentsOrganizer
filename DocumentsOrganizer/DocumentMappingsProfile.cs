@@ -18,6 +18,8 @@ namespace DocumentsOrganizer
                 .ForMember(x => x.Description, y => y.MapFrom(z => z.Description));
 
             CreateMap<CreateDocumentDto, Document>();
+
+            CreateMap<CreateInformationDto, DocumentInformation>();
         }
     }
 }
