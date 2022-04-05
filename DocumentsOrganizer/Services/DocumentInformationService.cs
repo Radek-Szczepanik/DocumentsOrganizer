@@ -2,6 +2,8 @@
 using DocumentsOrganizer.Entities;
 using DocumentsOrganizer.Exceptions;
 using DocumentsOrganizer.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DocumentsOrganizer.Services
@@ -33,6 +35,41 @@ namespace DocumentsOrganizer.Services
             context.SaveChanges();
 
             return documentInformationEntity.Id;
+        }
+
+        public DocumentInformationDto GetById(int documentId, int documentInformationId)
+        {
+            var document = context.Documents.FirstOrDefault(d => d.Id == documentId);
+            if (document is null)
+            {
+                throw new NotFoundException("Document not found");
+            }
+
+            var information = context.Informations.FirstOrDefault(i => i.Id == documentInformationId);
+
+            if (information is null || information.Id != documentInformationId)
+            {
+                throw new NotFoundException("Information not found");
+            }
+
+            var informationDto = mapper.Map<DocumentInformationDto>(information);
+
+            return informationDto;
+        }
+
+        public List<DocumentInformationDto> GetAll(int documentId)
+        {
+            var document = context.Documents
+                .Include(i => i.DocumentInformations)
+                .FirstOrDefault(d => d.Id == documentId);
+            if (document is null)
+            {
+                throw new NotFoundException("Document not found");
+            }
+
+            var informationDto = mapper.Map<List<DocumentInformationDto>>(document.DocumentInformations);
+
+            return informationDto;
         }
     }
 }
