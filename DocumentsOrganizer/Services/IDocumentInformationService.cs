@@ -5,8 +5,9 @@ namespace DocumentsOrganizer.Services
 {
     public interface IDocumentInformationService
     {
-        int CreateInformation(int documentId, CreateInformationDto dto);
-        DocumentInformationDto GetById(int documentId, int documentInformationId);
         List<DocumentInformationDto> GetAll(int documentId);
+        DocumentInformationDto GetById(int documentId, int documentInformationId);
+        int CreateInformation(int documentId, CreateInformationDto dto);
+        void RemoveAll(int documentId);
     }
 }

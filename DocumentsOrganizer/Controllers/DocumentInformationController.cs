@@ -37,5 +37,13 @@ namespace DocumentsOrganizer.Controllers
             var informationId = documentInformationService.CreateInformation(documentId, dto);
             return Created($"api/document/{documentId}/information/{informationId}", null);
         }
+
+        [HttpDelete]
+        public ActionResult Delete([FromRoute] int documentId)
+        {
+            documentInformationService.RemoveAll(documentId);
+
+            return NoContent();
+        }
     }
 }

@@ -21,12 +21,7 @@ namespace DocumentsOrganizer.Services
 
         public int CreateInformation(int documentId, CreateInformationDto dto)
         {
-            var document = context.Documents.FirstOrDefault(d => d.Id == documentId);
-            if (document is null)
-            {
-                throw new NotFoundException("Document not found");
-            }
-
+            var document = GetDocumentById(documentId);
             var documentInformationEntity = mapper.Map<DocumentInformation>(dto);
 
             documentInformationEntity.DocumentId = documentId;
@@ -39,12 +34,7 @@ namespace DocumentsOrganizer.Services
 
         public DocumentInformationDto GetById(int documentId, int documentInformationId)
         {
-            var document = context.Documents.FirstOrDefault(d => d.Id == documentId);
-            if (document is null)
-            {
-                throw new NotFoundException("Document not found");
-            }
-
+            var document = GetDocumentById(documentId);
             var information = context.Informations.FirstOrDefault(i => i.Id == documentInformationId);
 
             if (information is null || information.Id != documentInformationId)
@@ -59,6 +49,22 @@ namespace DocumentsOrganizer.Services
 
         public List<DocumentInformationDto> GetAll(int documentId)
         {
+            var document = GetDocumentById(documentId);
+            var informationDto = mapper.Map<List<DocumentInformationDto>>(document.DocumentInformations);
+
+            return informationDto;
+        }
+
+        public void RemoveAll(int documentId)
+        {
+            var document = GetDocumentById(documentId);
+
+            context.RemoveRange(document.DocumentInformations);
+            context.SaveChanges();
+        }
+
+        private Document GetDocumentById(int documentId)
+        {
             var document = context.Documents
                 .Include(i => i.DocumentInformations)
                 .FirstOrDefault(d => d.Id == documentId);
@@ -67,9 +73,7 @@ namespace DocumentsOrganizer.Services
                 throw new NotFoundException("Document not found");
             }
 
-            var informationDto = mapper.Map<List<DocumentInformationDto>>(document.DocumentInformations);
-
-            return informationDto;
+            return document;
         }
     }
 }
