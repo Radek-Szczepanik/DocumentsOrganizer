@@ -9,5 +9,6 @@ namespace DocumentsOrganizer.Services
         DocumentInformationDto GetById(int documentId, int documentInformationId);
         int CreateInformation(int documentId, CreateInformationDto dto);
         void RemoveAll(int documentId);
+        void RemoveById(int documentId, int documentInformationId);
     }
 }

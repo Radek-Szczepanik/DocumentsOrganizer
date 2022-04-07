@@ -63,6 +63,20 @@ namespace DocumentsOrganizer.Services
             context.SaveChanges();
         }
 
+        public void RemoveById(int documentId, int documentInformationId)
+        {
+            var document = GetDocumentById(documentId);
+            var information = context.Informations.FirstOrDefault(i => i.Id == documentInformationId);
+
+            if (information is null || information.Id != documentInformationId)
+            {
+                throw new NotFoundException("Information not found");
+            }
+
+            context.Remove(information);
+            context.SaveChanges();
+        }
+
         private Document GetDocumentById(int documentId)
         {
             var document = context.Documents

@@ -20,6 +20,7 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult<List<DocumentInformationDto>> GetAll([FromRoute] int documentId)
         {
             var result = documentInformationService.GetAll(documentId);
+
             return Ok(result);
         }
 
@@ -28,6 +29,7 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult<DocumentInformationDto> GetById([FromRoute] int documentId, [FromRoute] int documentInformationId)
         {
             DocumentInformationDto information = documentInformationService.GetById(documentId, documentInformationId);
+
             return Ok(information);
         }
 
@@ -35,6 +37,7 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult CreateDocumentInformation([FromRoute] int documentId, [FromBody] CreateInformationDto dto)
         {
             var informationId = documentInformationService.CreateInformation(documentId, dto);
+
             return Created($"api/document/{documentId}/information/{informationId}", null);
         }
 
@@ -42,6 +45,15 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult Delete([FromRoute] int documentId)
         {
             documentInformationService.RemoveAll(documentId);
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [Route("{documentInformationId}")]
+        public ActionResult DeleteById([FromRoute] int documentId, [FromRoute] int documentInformationId)
+        {
+            documentInformationService.RemoveById(documentId, documentInformationId);
 
             return NoContent();
         }
