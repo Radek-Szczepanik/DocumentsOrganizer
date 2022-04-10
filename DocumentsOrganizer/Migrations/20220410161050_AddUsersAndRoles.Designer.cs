@@ -3,14 +3,16 @@ using DocumentsOrganizer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DocumentsOrganizer.Migrations
 {
     [DbContext(typeof(DocumentsOrganizerDbContext))]
-    partial class DocumentsOrganizerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220410161050_AddUsersAndRoles")]
+    partial class AddUsersAndRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

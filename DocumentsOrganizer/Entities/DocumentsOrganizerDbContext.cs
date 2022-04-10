@@ -8,6 +8,8 @@ namespace DocumentsOrganizer.Entities
             "Server=DESKTOP-6607MV5\\SQLEXPRESS;Database=DocumentsOrganizerDb;Trusted_Connection=True;";
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentInformation> Informations { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +20,14 @@ namespace DocumentsOrganizer.Entities
 
             modelBuilder.Entity<DocumentInformation>()
                 .Property(d => d.Description)
+                .IsRequired();
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.Email)
+                .IsRequired();
+            
+            modelBuilder.Entity<Role>()
+                .Property(r => r.RoleName)
                 .IsRequired();
         }
 

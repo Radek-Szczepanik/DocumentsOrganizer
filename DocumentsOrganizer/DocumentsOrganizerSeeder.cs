@@ -14,15 +14,42 @@ namespace DocumentsOrganizer
         }
         public void Seed()
         {
-            if (this.dbContext.Database.CanConnect())
+            if (dbContext.Database.CanConnect())
             {
+                if (!dbContext.Roles.Any())
+                {
+                    var roles = GetRoles();
+                    dbContext.Roles.AddRange(roles);
+                    dbContext.SaveChanges();
+                }
+
                 if (!dbContext.Documents.Any())
                 {
                     var documents = GetDocuments();
-                    this.dbContext.AddRange(documents);
-                    this.dbContext.SaveChanges();
+                    dbContext.Documents.AddRange(documents);
+                    dbContext.SaveChanges();
                 }
             }
+        }
+        private IEnumerable<Role> GetRoles()
+        {
+            var roles = new List<Role>()
+            {
+                new Role()
+                {
+                    RoleName = "User"
+                },
+                new Role()
+                {
+                    RoleName = "Owner"
+                },
+                new Role()
+                {
+                    RoleName = "Admin"
+                }
+            };
+
+            return roles;
         }
 
         private IEnumerable<Document> GetDocuments()
