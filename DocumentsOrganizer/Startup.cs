@@ -3,6 +3,7 @@ using DocumentsOrganizer.Middleware;
 using DocumentsOrganizer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +31,7 @@ namespace DocumentsOrganizer
             services.AddScoped<IDocumentInformationService, DocumentInformationService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DocumentsOrganizer", Version = "v1" });
