@@ -40,7 +40,7 @@ namespace DocumentsOrganizer.Controllers
         public ActionResult CreateDocument([FromBody] CreateDocumentDto dto)
         {
             var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
-            var documentId = documentService.Create(dto, userId);
+            var documentId = documentService.Create(dto);
 
             return Created($"api/document/{documentId}", null);
         }
@@ -49,7 +49,7 @@ namespace DocumentsOrganizer.Controllers
         [Route("{id}")]
         public ActionResult UpdateDocument([FromBody] UpdateDocumentDto dto, [FromRoute] int id)
         {
-            documentService.Update(id, dto, User);
+            documentService.Update(id, dto);
 
             return Ok();
         }
@@ -58,7 +58,7 @@ namespace DocumentsOrganizer.Controllers
         [Route("{id}")]
         public ActionResult DeleteDocument([FromRoute] int id)
         {
-            documentService.Delete(id, User);
+            documentService.Delete(id);
 
             return NoContent();
         }

@@ -19,16 +19,19 @@ namespace DocumentsOrganizer.Services
         private readonly IMapper mapper;
         private readonly ILogger<DocumentService> logger;
         private readonly IAuthorizationService authorizationService;
+        private readonly IUserContextService userContextService;
 
         public DocumentService(DocumentsOrganizerDbContext dbContext,
             IMapper mapper, 
             ILogger<DocumentService> logger,
-            IAuthorizationService authorizationService)
+            IAuthorizationService authorizationService,
+            IUserContextService userContextService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.logger = logger;
             this.authorizationService = authorizationService;
+            this.userContextService = userContextService;
         }
 
         public IEnumerable<DocumentDto> GetAll()
@@ -59,24 +62,24 @@ namespace DocumentsOrganizer.Services
             return result;
         }
 
-        public int Create(CreateDocumentDto dto, int userId)
+        public int Create(CreateDocumentDto dto)
         {
             var document = mapper.Map<Entities.Document>(dto);
-            document.CreatedById = userId;
+            document.CreatedById = userContextService.GetUserId;
             dbContext.Documents.Add(document);
             dbContext.SaveChanges();
 
             return document.Id;
         }
 
-        public void Update(int id, UpdateDocumentDto dto, ClaimsPrincipal user)
+        public void Update(int id, UpdateDocumentDto dto)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
 
             if (document is null)
                 throw new NotFoundException("Document not found");
 
-            var authorizationResult = authorizationService.AuthorizeAsync(user, document,
+            var authorizationResult = authorizationService.AuthorizeAsync(userContextService.User, document,
                 new ResourceOperationRequirement(ResourceOperation.Update)).Result;
             if (!authorizationResult.Succeeded)
             {
@@ -88,14 +91,14 @@ namespace DocumentsOrganizer.Services
             dbContext.SaveChanges();
         }
 
-        public void Delete(int id, ClaimsPrincipal user)
+        public void Delete(int id)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
 
             if(document is null)
                 throw new NotFoundException("Document not found");
 
-            var authorizationResult = authorizationService.AuthorizeAsync(user, document,
+            var authorizationResult = authorizationService.AuthorizeAsync(userContextService.User, document,
                 new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
             if (!authorizationResult.Succeeded)
             {
