@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using DocumentsOrganizer.Authorization;
 using DocumentsOrganizer.Entities;
 using DocumentsOrganizer.Exceptions;
 using DocumentsOrganizer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
+using System.Security.Claims;
 
 namespace DocumentsOrganizer.Services
 {
@@ -14,12 +18,17 @@ namespace DocumentsOrganizer.Services
         private readonly DocumentsOrganizerDbContext dbContext;
         private readonly IMapper mapper;
         private readonly ILogger<DocumentService> logger;
+        private readonly IAuthorizationService authorizationService;
 
-        public DocumentService(DocumentsOrganizerDbContext dbContext, IMapper mapper, ILogger<DocumentService> logger)
+        public DocumentService(DocumentsOrganizerDbContext dbContext,
+            IMapper mapper, 
+            ILogger<DocumentService> logger,
+            IAuthorizationService authorizationService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.logger = logger;
+            this.authorizationService = authorizationService;
         }
 
         public IEnumerable<DocumentDto> GetAll()
@@ -50,33 +59,48 @@ namespace DocumentsOrganizer.Services
             return result;
         }
 
-        public int Create(CreateDocumentDto dto)
+        public int Create(CreateDocumentDto dto, int userId)
         {
-            var document = mapper.Map<Document>(dto);
+            var document = mapper.Map<Entities.Document>(dto);
+            document.CreatedById = userId;
             dbContext.Documents.Add(document);
             dbContext.SaveChanges();
 
             return document.Id;
         }
 
-        public void Update(int id, UpdateDocumentDto dto)
+        public void Update(int id, UpdateDocumentDto dto, ClaimsPrincipal user)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
 
             if (document is null)
                 throw new NotFoundException("Document not found");
 
+            var authorizationResult = authorizationService.AuthorizeAsync(user, document,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
             document.Name = dto.Name;
 
             dbContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(int id, ClaimsPrincipal user)
         {
             var document = dbContext.Documents.FirstOrDefault(x => x.Id == id);
 
             if(document is null)
                 throw new NotFoundException("Document not found");
+
+            var authorizationResult = authorizationService.AuthorizeAsync(user, document,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
 
             dbContext.Documents.Remove(document);
             dbContext.SaveChanges();

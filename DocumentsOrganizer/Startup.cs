@@ -1,3 +1,4 @@
+using DocumentsOrganizer.Authorization;
 using DocumentsOrganizer.Entities;
 using DocumentsOrganizer.Middleware;
 using DocumentsOrganizer.Models;
@@ -5,6 +6,7 @@ using DocumentsOrganizer.Models.Validators;
 using DocumentsOrganizer.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +51,7 @@ namespace DocumentsOrganizer
                 };
             });
 
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<DocumentsOrganizerDbContext>();
             services.AddScoped<DocumentsOrganizerSeeder>();

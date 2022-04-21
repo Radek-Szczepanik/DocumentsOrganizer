@@ -1,12 +1,15 @@
 ﻿using DocumentsOrganizer.Models;
 using DocumentsOrganizer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace DocumentsOrganizer.Controllers
 {
     [Route("api/document")]
     [ApiController]
+    [Authorize]
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService documentService;
@@ -36,7 +39,8 @@ namespace DocumentsOrganizer.Controllers
         [HttpPost]
         public ActionResult CreateDocument([FromBody] CreateDocumentDto dto)
         {
-            var documentId = documentService.Create(dto);
+            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var documentId = documentService.Create(dto, userId);
 
             return Created($"api/document/{documentId}", null);
         }
@@ -45,7 +49,7 @@ namespace DocumentsOrganizer.Controllers
         [Route("{id}")]
         public ActionResult UpdateDocument([FromBody] UpdateDocumentDto dto, [FromRoute] int id)
         {
-            documentService.Update(id, dto);
+            documentService.Update(id, dto, User);
 
             return Ok();
         }
@@ -54,9 +58,9 @@ namespace DocumentsOrganizer.Controllers
         [Route("{id}")]
         public ActionResult DeleteDocument([FromRoute] int id)
         {
-            documentService.Delete(id);
+            documentService.Delete(id, User);
 
-            return NotFound();
+            return NoContent();
         }
     }
 }
