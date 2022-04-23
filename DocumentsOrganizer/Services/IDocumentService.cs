@@ -5,7 +5,7 @@ namespace DocumentsOrganizer.Services
 {
     public interface IDocumentService
     {
-        IEnumerable<DocumentDto> GetAll();
+        IEnumerable<DocumentDto> GetAll(string searchPhrase);
         DocumentDto GetById(int id);
         int Create(CreateDocumentDto dto);
         void Update(int id, UpdateDocumentDto dto);

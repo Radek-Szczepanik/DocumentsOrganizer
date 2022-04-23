@@ -20,9 +20,9 @@ namespace DocumentsOrganizer.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<DocumentDto>> GetAll()
+        public ActionResult<IEnumerable<DocumentDto>> GetAll([FromQuery] string searchPhrase)
         {
-            var documents = documentService.GetAll();
+            var documents = documentService.GetAll(searchPhrase);
 
             return Ok(documents);
         }

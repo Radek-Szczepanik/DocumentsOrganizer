@@ -34,11 +34,12 @@ namespace DocumentsOrganizer.Services
             this.userContextService = userContextService;
         }
 
-        public IEnumerable<DocumentDto> GetAll()
+        public IEnumerable<DocumentDto> GetAll(string searchPhrase)
         {
             var documents = dbContext
                 .Documents
                 .Include(i => i.DocumentInformations)
+                .Where(s => searchPhrase == null || s.Name.ToLower().Contains(searchPhrase.ToLower()))
                 .ToList();
 
             if (documents is null)
