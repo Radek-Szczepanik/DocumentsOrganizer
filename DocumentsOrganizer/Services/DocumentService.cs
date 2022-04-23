@@ -6,10 +6,10 @@ using DocumentsOrganizer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Claims;
+using System.Linq.Expressions;
 
 namespace DocumentsOrganizer.Services
 {
@@ -40,6 +40,20 @@ namespace DocumentsOrganizer.Services
                 .Documents
                 .Include(i => i.DocumentInformations)
                 .Where(s => query.SearchPhrase == null || s.Name.ToLower().Contains(query.SearchPhrase.ToLower()));
+
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<Document, object>>>
+                {
+                    { nameof(Document.Name), r => r.Name }
+                };
+
+                var selectedColumn = columnsSelector[query.SortBy];
+
+                baseQuery = query.SortDirection == SortDirection.ASC
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
 
             var documents = baseQuery
                 .Skip(query.PageSize * (query.PageNumber - 1))
