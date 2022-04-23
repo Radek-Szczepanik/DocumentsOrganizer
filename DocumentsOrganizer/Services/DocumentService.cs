@@ -34,18 +34,27 @@ namespace DocumentsOrganizer.Services
             this.userContextService = userContextService;
         }
 
-        public IEnumerable<DocumentDto> GetAll(string searchPhrase)
+        public PageResult<DocumentDto> GetAll(DocumentQuery query)
         {
-            var documents = dbContext
+            var baseQuery = dbContext
                 .Documents
                 .Include(i => i.DocumentInformations)
-                .Where(s => searchPhrase == null || s.Name.ToLower().Contains(searchPhrase.ToLower()))
+                .Where(s => query.SearchPhrase == null || s.Name.ToLower().Contains(query.SearchPhrase.ToLower()));
+
+            var documents = baseQuery
+                .Skip(query.PageSize * (query.PageNumber - 1))
+                .Take(query.PageSize)
                 .ToList();
+
+            var totalItemsCount = baseQuery.Count();
 
             if (documents is null)
                 throw new NotFoundException("Document not found");
 
-            var result = mapper.Map<List<DocumentDto>>(documents);
+            var documentsDto = mapper.Map<List<DocumentDto>>(documents);
+
+            var result = new PageResult<DocumentDto>(documentsDto, totalItemsCount, query.PageSize, query.PageNumber);
+
             return result;
         }
 
