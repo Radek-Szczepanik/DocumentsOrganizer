@@ -4,8 +4,8 @@ namespace DocumentsOrganizer.Entities
 {
     public class DocumentsOrganizerDbContext : DbContext
     {
-        private string connectionString =
-            "Server=DESKTOP-6607MV5\\SQLEXPRESS;Database=DocumentsOrganizerDb;Trusted_Connection=True;";
+        public DocumentsOrganizerDbContext(DbContextOptions<DocumentsOrganizerDbContext> options) : base(options) { }
+        
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentInformation> Informations { get; set; }
         public DbSet<User> Users { get; set; }
@@ -29,11 +29,6 @@ namespace DocumentsOrganizer.Entities
             modelBuilder.Entity<Role>()
                 .Property(r => r.RoleName)
                 .IsRequired();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(connectionString);
         }
     }
 }
