@@ -1,4 +1,5 @@
 ﻿using DocumentsOrganizer.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,6 +17,12 @@ namespace DocumentsOrganizer
         {
             if (dbContext.Database.CanConnect())
             {
+                var pendingMigrations = dbContext.Database.GetPendingMigrations();
+                if (pendingMigrations != null && pendingMigrations.Any())
+                {
+                    dbContext.Database.Migrate();
+                }
+
                 if (!dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
