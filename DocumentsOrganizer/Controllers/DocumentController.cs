@@ -20,6 +20,7 @@ namespace DocumentsOrganizer.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<DocumentDto>> GetAll([FromQuery] DocumentQuery query)
         {
             var documents = documentService.GetAll(query);
@@ -29,6 +30,7 @@ namespace DocumentsOrganizer.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [AllowAnonymous]
         public ActionResult<DocumentDto> GetById([FromRoute] int id)
         {
             var document = documentService.GetById(id);

@@ -124,6 +124,7 @@ namespace DocumentsOrganizer.Services
 
             var authorizationResult = authorizationService.AuthorizeAsync(userContextService.User, document,
                 new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
             if (!authorizationResult.Succeeded)
             {
                 throw new ForbidException();

@@ -17,12 +17,15 @@ namespace DocumentsOrganizer
         {
             if (dbContext.Database.CanConnect())
             {
-                var pendingMigrations = dbContext.Database.GetPendingMigrations();
-                if (pendingMigrations != null && pendingMigrations.Any())
+                if (dbContext.Database.IsRelational())
                 {
-                    dbContext.Database.Migrate();
+                    var pendingMigrations = dbContext.Database.GetPendingMigrations();
+                    if (pendingMigrations != null && pendingMigrations.Any())
+                    {
+                        dbContext.Database.Migrate();
+                    }
                 }
-
+                
                 if (!dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
@@ -77,7 +80,22 @@ namespace DocumentsOrganizer
                             Description = "Wypowiedzieć umowę do dnia ..."
                         }
                     }
-                }  
+                },
+                new Document()
+                {
+                    Name = "Samochód",
+                    DocumentInformations= new List<DocumentInformation>()
+                    {
+                        new DocumentInformation()
+                        {
+                            Description = "Zrobić przegląd"
+                        },
+                        new DocumentInformation()
+                        {
+                            Description = "Opłacić ubezpieczenie"
+                        }
+                    }
+                }
             };
 
             return documents;
