@@ -52,7 +52,7 @@ namespace DocumentsOrganizer
                 };
             });
 
-            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, DocumentOperationRequirementHandler>();
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<DocumentsOrganizerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DocumentsDbConnection")));

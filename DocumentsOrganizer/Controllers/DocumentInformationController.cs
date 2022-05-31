@@ -1,5 +1,6 @@
 ﻿using DocumentsOrganizer.Models;
 using DocumentsOrganizer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -39,6 +40,17 @@ namespace DocumentsOrganizer.Controllers
             var informationId = documentInformationService.CreateInformation(documentId, dto);
 
             return Created($"api/document/{documentId}/information/{informationId}", null);
+        }
+
+        [HttpPut]
+        [Route("{documentInformationId}")]
+        public ActionResult UpdateDocumentInformation([FromBody] UpdateDocumentInformationDto dto, 
+                                                      [FromRoute] int documentInformationId,
+                                                      [FromRoute] int documentId)
+        {
+            documentInformationService.UpdateInformation(documentId, documentInformationId, dto);
+
+            return Ok();
         }
 
         [HttpDelete]

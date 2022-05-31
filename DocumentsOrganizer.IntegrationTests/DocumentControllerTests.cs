@@ -54,8 +54,10 @@ namespace DocumentsOrganizer.IntegrationTests
         [InlineData("PageNumber=155&PageSize=15")]
         public async Task GetAll_WithQueryParameters_ReturnsOkResult(string queryParams)
         {
+            // act
             var response = await this.client.GetAsync("/api/document?" + queryParams);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -67,8 +69,10 @@ namespace DocumentsOrganizer.IntegrationTests
         [InlineData(null)]
         public async Task GetAll_WithInvalidQueryParameters_ReturnsBadRequestResult(string queryParams)
         {
+            // act
             var response = await this.client.GetAsync("/api/document?" + queryParams);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -77,8 +81,10 @@ namespace DocumentsOrganizer.IntegrationTests
         [InlineData("2")]
         public async Task GetById_ForExistingDocument_ReturnsOkResult(string queryParams)
         {
+            // act
             var response = await this.client.GetAsync("/api/document/" + queryParams);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -87,8 +93,10 @@ namespace DocumentsOrganizer.IntegrationTests
         [InlineData("12")]
         public async Task GetById_ForNonExistingDocument_ReturnsOkResult(string queryParams)
         {
+            // act
             var response = await this.client.GetAsync("/api/document/" + queryParams);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -97,14 +105,17 @@ namespace DocumentsOrganizer.IntegrationTests
         [InlineData(null)]
         public async Task GetById_WithInvalidQueryParameters_ReturnsBadRequestResult(string queryParams)
         {
+            // act
             var response = await this.client.GetAsync("/api/document/" + queryParams);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Fact]
         public async Task CreateDocument_WithValidModel_ReturnsCreatedResult()
         {
+            // arrange
             var model = new CreateDocumentDto()
             {
                 Name = "Test document"
@@ -112,8 +123,10 @@ namespace DocumentsOrganizer.IntegrationTests
 
             var httpContent = model.ToJsonHttpContent();
 
+            // act
             var response = await this.client.PostAsync("/api/document", httpContent);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             response.Headers.Location.Should().NotBeNull();
         }
@@ -121,6 +134,7 @@ namespace DocumentsOrganizer.IntegrationTests
         [Fact]
         public async Task CreateDocument_WithInvalidModel_ReturnsBadRequestResult()
         {
+            // arrange
             var model = new CreateDocumentDto()
             {
                 
@@ -128,16 +142,20 @@ namespace DocumentsOrganizer.IntegrationTests
 
             var httpContent = model.ToJsonHttpContent();
 
+            // act
             var response = await this.client.PostAsync("/api/document", httpContent);
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Fact]
         public async Task Delete_ForNonExistingDocument_ReturnsNotFoundResult()
         {
+            // act
             var response = await this.client.DeleteAsync("/api/document/594");
 
+            // assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -145,7 +163,6 @@ namespace DocumentsOrganizer.IntegrationTests
         public async Task Delete_ForDocumentOwner_ReturnsNoContentResult()
         {
             // arrange
-
             var document = new Document()
             {
                 CreatedById = 1,
@@ -155,11 +172,9 @@ namespace DocumentsOrganizer.IntegrationTests
             SeedDocument(document);
 
             // act
-
             var response = await this.client.DeleteAsync("/api/document/" + document.Id);
 
             // assert
-
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         }
 
@@ -167,7 +182,6 @@ namespace DocumentsOrganizer.IntegrationTests
         public async Task Delete_ForNonDocumentOwner_ReturnsForbiddenResult()
         {
             // arrange
-
             var document = new Document()
             {
                 CreatedById = 328,
@@ -177,11 +191,9 @@ namespace DocumentsOrganizer.IntegrationTests
             SeedDocument(document);
 
             // act
-
             var response = await this.client.DeleteAsync("/api/document/" + document.Id);
 
             // assert
-
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
     }

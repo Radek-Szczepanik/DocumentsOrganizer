@@ -42,7 +42,6 @@ namespace DocumentsOrganizer.IntegrationTests
         public async Task RegisterUser_ForValidModel_ReturnsOkResult()
         {
             // arrange
-
             var registerUser = new RegisterUserDto()
             {
                 Email = "test@test.pl",
@@ -53,11 +52,9 @@ namespace DocumentsOrganizer.IntegrationTests
             var httpContent = registerUser.ToJsonHttpContent();
 
             // act
-
             var response = await this.client.PostAsync("/api/account/register", httpContent);
 
             // assert
-
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -65,7 +62,6 @@ namespace DocumentsOrganizer.IntegrationTests
         public async Task RegisterUser_ForInvalidModel_ReturnsBadRequestResult()
         {
             // arrange
-
             var registerUser = new RegisterUserDto()
             {
                 Password = "password123",
@@ -75,11 +71,9 @@ namespace DocumentsOrganizer.IntegrationTests
             var httpContent = registerUser.ToJsonHttpContent();
 
             // act
-
             var response = await this.client.PostAsync("/api/account/register", httpContent);
 
             // assert
-
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -87,7 +81,6 @@ namespace DocumentsOrganizer.IntegrationTests
         public async Task Login_ForRegisteredUser_ReturnsOkResult()
         {
             // arrange
-
             this.accountServiceMock
                 .Setup(x => x.GenerateJwt(It.IsAny<LoginDto>()))
                 .Returns("jwt");
@@ -101,11 +94,9 @@ namespace DocumentsOrganizer.IntegrationTests
             var httpContent = loginDto.ToJsonHttpContent();
 
             // act
-
             var response = await this.client.PostAsync("/api/account/login", httpContent);
 
             // assert
-
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }

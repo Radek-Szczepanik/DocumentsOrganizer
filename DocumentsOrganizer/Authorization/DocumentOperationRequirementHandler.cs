@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DocumentsOrganizer.Authorization
 {
-    public class ResourceOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement, Document>
+    public class DocumentOperationRequirementHandler : AuthorizationHandler<ResourceOperationRequirement, Document>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
             ResourceOperationRequirement requirement,
